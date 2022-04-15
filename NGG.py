@@ -13,6 +13,9 @@ logo = '''
 
 NUMBERS = list(range(101))
 
+def clearConsole():
+    print('\n' * 150)
+
 def game_intro(random_number):
     '''Initializes the game'''
 
@@ -37,40 +40,55 @@ def play_again(reply):
     '''Restarts the game if the user wants to play again'''
     
     if reply == 'Yes':
+        clearConsole()
         game_intro(r.choice(NUMBERS))
     elif reply == 'No':
         print('Thanks for playing!')
+    else:
+        print(f'Please only type \'Yes\' or \'No\' below')
+        answer = input('Would you like to play again? Type \'Yes\' or \'No\': ')
+        play_again(answer)
 
 def guess_input(guesses, correct_number):
+    '''Asks the user for a number and checks to see if it is correct, too high, or too low'''
     
-    while guesses > 0:
+    if guesses == 0 or guesses < 0:
+        print(f'You ran out of guesses. You lose. \n The number was {correct_number}.')
+        answer = input('Would you like to play again? Type \'Yes\' or \'No\': ')
+        play_again(answer)
+
+    else:
 
         guess = int(input('Make your guess here: '))
 
-        try:
-            if guess == correct_number:
-                print(f'You got it! The number was {correct_number}')
-                answer = input('Would you like to play again? Type \'Yes\' or \'No\':')
-                play_again(answer)
-                guesses = 0
-            elif guess > correct_number:
-                print('Too high. Guess again below')
-                guesses -= 1
-                print(f'Guesses Remaining: {guesses}')
-                guess_input(guesses, correct_number)
-            elif guess < correct_number:
-                print('Too low. Guess again below')
-                guesses -= 1
-                print(f'Guesses Remaining: {guesses}')
-                guess_input(guesses, correct_number)
-        except:
-            print('Please enter a valid number between 0 and 100')
-            guess_input(guesses, correct_number)
+        if guess == correct_number:
+            print(f'You got it! The number was {correct_number}!')
+            answer = input('Would you like to play again? Type \'Yes\' or \'No\': ')
+            play_again(answer)
 
-    else:
-        print('You ran out of guesses. You lose.')
-        answer = input('Would you like to play again? Type \'Yes\' or \'No\':')
-        play_again(answer)
+        while guess != correct_number and guesses > 0 and hope:
 
+                try:
+                    if guess > correct_number:
+                        guesses -= 1
+                        if guesses == 0:
+                            print('Sorry, too high.')
+                            guess_input(guesses, correct_number)
+                        else:
+                            print('Too high. Guess again below')
+                            print(f'Guesses Remaining: {guesses}')
+                            guess_input(guesses, correct_number)
+                    elif guess < correct_number:
+                        guesses -= 1
+                        if guesses == 0:
+                            print('Sorry, too low.')
+                            guess_input(guesses, correct_number)
+                        else:
+                            print(f'Guesses Remaining: {guesses}')
+                            print('Too low. Guess again below')
+                            guess_input(guesses, correct_number)
+                except:
+                    print('Please enter a valid number between 0 and 100')
+                    guess_input(guesses, correct_number)
 
 game_intro(r.choice(NUMBERS))
